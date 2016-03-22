@@ -1,10 +1,14 @@
 doctype html
 html
 	head
-		title= "Janhochatti"
+		link(rel='stylesheet', href='/tyyli.css')
+		title = Janhochatti
 		script(src = '/jquery-2.2.2.min.js')
-
+		script(src = '/chat.js')
+		script(src = '/socket.io/socket.io.js')
 	body
-		form(method="get" action="/chat")
-			input(name="user" type="text", placeholder="Nimi")
-			input(type="submit", value="Kirjaudu")
+		#content
+			#login
+				h1 Janhochatti
+				input#usernamefield( type="text", placeholder="Nimi")
+				button#loginbutton Kirjaudu

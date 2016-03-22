@@ -1,7 +1,10 @@
+var port = 1337;
+var maxMessagesPerChannel = 100;
+
+
 var express = require('express');
 var bodyParser = require('body-parser');
 
-var port = 1337;
 console.log("Aloitetaan chattiseveri portissa "+port);
 var app = express();
 
@@ -18,33 +21,61 @@ app.get('/', function(req,res){
 	console.log('Uusi käyttäjä saapui sivulle');
 	res.render('login');
 });
-app.get('/chat', function(req,res){
-	var user = req.params.user;
-	res.render('page', {username : user});
-});
+
+var channels = ['lobby'];
 
 var io = require('socket.io').listen(app.listen(port));
 io.on('connection', function(socket){
+
+	socket.on('login', function(data){
+		console.log(data.username + ' kirjautui chattiin');
+		socket.username = data.username;
+		socket.emit('updateChannels', {channellist : channels});
+	});
+
 	socket.on('disconnect', function(){
-		console.log('user disconnected');
+		console.log(socket.username + ' disconnected');
 	});
+
 	socket.on('join', function(data){
-		console.log(data);
+		var channel = data.channel;
+
+		if(channels.indexOf(channel) == -1){
+			channels.push(channel);
+		}
+		socket.join(channel);
+		var msg = socket.username + ' liittyi kanavalle ' + channel;
+		io.emit('message', {channel : channel, message : msg});
+		console.log(msg);
+	});
+
+	socket.on('leave', function(data){
+		var channel = data.channel;
+		socket.leave(channel);		
+	});
+
+	socket.on('post', function(data){
+		var channel = data.channel;
+		console.log(data.channel + '- ' + socket.username + ': ' + data.message);
+		io.to(channel).emit('message', { channel : channel, username : socket.username, message : data.message });
 	});
 });
 
-/*
-
-	console.log('uusi yhteys');
-	socket.on('join', function(data){
-		console.log('käyttäjä liittyi kanavaan');
-		//var msg = 'Käyttäjä liittyi kanavalle ' + data.channel + ' käyttäjänimellä: '+ data.username;
-		//console.log(msg);
-		//io.sockets.emit('message', {channel : data.channel, username : data.username, message : msg});
-	});
-	socket.on('send', function(data) {
-		console.log('uusi viesti');
-		//io.sockets.emit('message', { channel : data.channel, username : data.username, message : data.message });
-	});
-});
-*/
+function findClientsSocket(roomId, namespace) {
+	var res = [],
+		ns = io.of(namespace ||"/"); // the default namespace is "/"
+	if (ns) {
+		for (var id in ns.connected) {
+			if(roomId) {
+				var index = ns.connected[id].rooms.indexOf(roomId) ;
+				if(index !== -1) {
+					res.push(ns.connected[id]);
+				}
+			}
+			else {
+				res.push(ns.connected[id]);
+			}
+		}
+	}
+	return res;
+}

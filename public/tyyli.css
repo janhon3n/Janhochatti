@@ -1,0 +1,84 @@
+window{
+height:100%;
+}
+html{
+height:100%;
+}
+body{
+height:100%;
+margin:0px;
+}
+#content{
+height:100%;
+overflow:hidden;
+}
+#login{
+background-color:#666;
+height:100%;
+text-align:center;
+padding:50px;
+}
+#login h1{
+margin:0px;
+padding:0px;
+}
+#left{
+float:left;
+width:200px;
+background-color:#666;
+height:100%;
+}
+#channellist{
+margin:10px;
+}
+.channel{
+color:white;
+border-radius:5px;
+padding:2px;
+cursor:pointer;
+}
+.channel:hover{
+background-color:#BBB;
+color:black;
+}
+
+#right{
+float:right;
+width:calc(100% - 200px);
+background-color:#EEE;
+height:100%;
+}
+
+#messages{
+height:calc(100% - 30px);
+}
+
+#input{
+padding:0px;
+height:30px;
+background-color:#EEE;
+border-top:1px solid #AAA;
+}
+#input input{
+height:30px;
+width:calc(100% - 100px);
+margin:0px;
+border:0px;
+border-right:1px solid #AAA;
+padding:4px;
+display:inline-block;
+
+
+-webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
+-moz-box-sizing: border-box;    /* Firefox, other Gecko */
+box-sizing: border-box;         /* Opera/IE 8+ */
+}
+#input button{
+height:30px;
+width:96px;
+padding:0px;
+margin:0px;
+border:0px;
+border-left:1px solid #AAA;
+display:inline-block;
+}

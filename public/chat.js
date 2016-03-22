@@ -1,35 +1,78 @@
 window.onload = function(){
-	alert('js toimi');
-	alert(user);
+	var messages = [];
+	var user = getUrlVars()['user'];
 
 	var messages = [];
+	var currentChannel = '';
+
+	$('button#loginbutton').click(function(){
+		login($('#usernamefield').val());
+	});
+}
+
+function login(username){
 	var socket = io();
 
-	var field = document.getElementById("field");
-	var sendButton = document.getElementById("send");
-	var chat = document.getElementById("content");
+	socket.emit('login', {username : username});
 
-	socket.emit('join', {username : user, channel : 'lobby'});
-}
-/*
-	socket.on('message', function(data) {
-		if(data.message) {
-			messages.push(data.message);
-			var html = '';
-			for(var i=0; i < messages.length; i++){
-				html += '<div>' + messages[i] + '</div>';
+	$('#content').load('/chat.html', function(){
+		socket.emit('join', {channel : 'lobby'});
+		moveToChannel('lobby');
+
+		socket.on('updateChannels', function(data){
+			alert(data.channellist);
+			var channellist = data.channellist;
+			for(var i = 0; i < channellist.length; i++){
+				if(!messages[channellist[i]]){
+					alert('luodaan uusi messageslista kanavalle '+channellist[i]);
+					messages[channellist[i]] = [];
+				}
 			}
-			chat.innerHTML = html;
-		} else {
-			console.log("There is a problem:", data);
-		}
+			var html = '';
+			for(i = 0; i < channellist.length; i++){
+				html = html + '<div class="channel">' + channellist[i] + '</div>';
+				$('#channellist').html(html);
+			}
+		});
+
+		$('#input button').click(function(){
+			var msg = $('#input input').val();
+			socket.emit('post', { channel : currentChannel, message : msg });
+		});
+
+
+		socket.on('message', function(data){
+			alert('uusi viesti: '+data.username + ' ' + data.message);
+			messages[data.channel].push({username : data.username, message : data.message});
+			if(data.channel == currentChannel){
+				addNewMessage(data.username, data.message);
+			}
+		});
 	});
-
-
-	sendButton.onclick = function() {
-		var text = field.value;
-		var channel = field2.value;
-		socket.emit('send', {channel : channel, username : user, message : text});
-	};
 }
-*/
+
+function moveToChannel(channel){
+	currentChannel = channel;
+	alert('setting current channel to ' + channel);
+	if(!messages[channel]){
+		alert('luodaan uusi messageslista kanavalle ' + channel);
+		messages[channel] = [];
+	}
+
+	$('#messages').html('');
+	for(var i = 0; i < messages[channel].length; i++){
+		addNewMessage(messages[channel][i].username, messages[channel][i].message);
+	}
+}
+
+function addNewMessage(user, msg){
+	$('#messages').append('<div class="message">' + user + ': ' + msg + '</div>');
+}
+
+function getUrlVars() {
+	var vars = {};
+	var parts = window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, function(m,key,value) {
+		vars[key] = value;
+	});
+	return vars;
+}
