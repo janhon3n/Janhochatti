@@ -22,7 +22,7 @@ app.get('/', function(req,res){
 	res.render('login');
 });
 
-var channels = ['lobby'];
+var channels = ['lobby', 'testikanava', 'koodikanava'];
 
 var io = require('socket.io').listen(app.listen(port));
 io.on('connection', function(socket){
@@ -45,7 +45,7 @@ io.on('connection', function(socket){
 		}
 		socket.join(channel);
 		var msg = socket.username + ' liittyi kanavalle ' + channel;
-		io.emit('message', {channel : channel, message : msg});
+		io.emit('info', {channel : channel, message : msg});
 		console.log(msg);
 	});
 

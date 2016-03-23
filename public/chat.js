@@ -1,37 +1,56 @@
-window.onload = function(){
-	var messages = [];
-	var user = getUrlVars()['user'];
+var messages = [];
+var defaultChannel = 'lobby';
 
-	var messages = [];
-	var currentChannel = '';
+var channelsOn = [];
+var currentChannel = '';
 
+$('document').ready(function(){
 	$('button#loginbutton').click(function(){
 		login($('#usernamefield').val());
 	});
-}
+});
 
-function login(username){
-	var socket = io();
-
-	socket.emit('login', {username : username});
-
+function login(usern){
 	$('#content').load('/chat.html', function(){
-		socket.emit('join', {channel : 'lobby'});
-		moveToChannel('lobby');
+		var socket = io();
+		socket.emit('login', {username : usern}, function(){
+		});
 
+		joinToChannel(socket, 'lobby');
 		socket.on('updateChannels', function(data){
-			alert(data.channellist);
 			var channellist = data.channellist;
+			console.log('updating channels:');
+			console.log(channellist);
+			var html = '';
 			for(var i = 0; i < channellist.length; i++){
-				if(!messages[channellist[i]]){
-					alert('luodaan uusi messageslista kanavalle '+channellist[i]);
-					messages[channellist[i]] = [];
+				if(channelsOn.indexOf(channellist[i]) == -1){
+					html = html + '<div class="channel channelJoin">' + channellist[i] + '</div>';
 				}
 			}
-			var html = '';
-			for(i = 0; i < channellist.length; i++){
-				html = html + '<div class="channel">' + channellist[i] + '</div>';
-				$('#channellist').html(html);
+			$('#channellist').html(html);
+			$('.channelJoin').click(function(){
+				joinToChannel(socket, $(this).html());
+				$(this).remove();
+			});
+		});
+
+		socket.on('message', function(data){
+			var msg = data.username + ': ' + data.message;
+			console.log(msg);
+
+			messages[data.channel].push({username : data.username, message : data.message});
+			if(data.channel == currentChannel){
+				addNewMessage(data.username, data.message);
+			}
+		});
+
+		socket.on('info', function(data){
+			var msg = data.message;
+			console.log(msg);
+
+			messages[data.channel].push({username : 'info', message : msg});
+			if(data.channel == currentChannel){
+				addNewMessage('info', data.message);
 			}
 		});
 
@@ -40,22 +59,33 @@ function login(username){
 			socket.emit('post', { channel : currentChannel, message : msg });
 		});
 
-
-		socket.on('message', function(data){
-			alert('uusi viesti: '+data.username + ' ' + data.message);
-			messages[data.channel].push({username : data.username, message : data.message});
-			if(data.channel == currentChannel){
-				addNewMessage(data.username, data.message);
-			}
-		});
+		
 	});
+}
+
+function joinToChannel(socket, chan){
+	console.log('joining channel '+chan);
+	channelsOn.push(chan);
+	currentChannel = chan;
+	messages[chan] = [];
+	$('#messages').html('');
+	socket.emit('join', {channel : chan});
+	$('#activechannellist').append('<div class="channel channelMove">' + chan + '</div>');	
+	$('.channelMove').click(function(){
+		moveToChannel($(this).html());
+	});
+
+}
+
+function leaveChannel(chan){
+
 }
 
 function moveToChannel(channel){
 	currentChannel = channel;
-	alert('setting current channel to ' + channel);
+	console.log('setting current channel to ' + channel);
 	if(!messages[channel]){
-		alert('luodaan uusi messageslista kanavalle ' + channel);
+		console.log('luodaan uusi messageslista kanavalle ' + channel);
 		messages[channel] = [];
 	}
 
@@ -65,8 +95,8 @@ function moveToChannel(channel){
 	}
 }
 
-function addNewMessage(user, msg){
-	$('#messages').append('<div class="message">' + user + ': ' + msg + '</div>');
+function addNewMessage(usern, msg){
+	$('#messages').append('<div class="message">' + usern + ': ' + msg + '</div>');
 }
 
 function getUrlVars() {

@@ -13,7 +13,7 @@ height:100%;
 overflow:hidden;
 }
 #login{
-background-color:#666;
+background-color:#DDD;
 height:100%;
 text-align:center;
 padding:50px;
@@ -21,6 +21,8 @@ padding:50px;
 #login h1{
 margin:0px;
 padding:0px;
+font-family:Helvetica;
+margin-bottom:50px;
 }
 #left{
 float:left;
@@ -28,6 +30,10 @@ width:200px;
 background-color:#666;
 height:100%;
 }
+#activechannellist{
+margin:10px;
+}
+
 #channellist{
 margin:10px;
 }
@@ -42,6 +48,9 @@ background-color:#BBB;
 color:black;
 }
 
+#createnewchannel{
+
+}
 #right{
 float:right;
 width:calc(100% - 200px);
@@ -51,8 +60,17 @@ height:100%;
 
 #messages{
 height:calc(100% - 30px);
-}
+padding:10px;
 
+-webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
+-moz-box-sizing: border-box;    /* Firefox, other Gecko */
+box-sizing: border-box;         /* Opera/IE 8+ */
+}
+.message{
+margin:5px;
+border:1px solid #AAA;
+background-color:white;
+}
 #input{
 padding:0px;
 height:30px;
