@@ -5,8 +5,13 @@ var channelsOn = [];
 var currentChannel = '';
 
 $('document').ready(function(){
-	$('button#loginbutton').click(function(){
+	$('#login button#loginbutton').click(function(){
 		login($('#usernamefield').val(), $('input#color').val());
+	});
+	$('#login input').keyup(function(e){
+		if(e.keyCode == 13){
+			login($('#usernamefield').val(), $('input#color').val());
+		}
 	});
 });
 
@@ -56,11 +61,39 @@ function login(usern, col){
 
 		$('#input button').click(function(){
 			var msg = $('#input input').val();
+			$('#input input').val('');
 			socket.emit('post', { channel : currentChannel, message : msg });
 		});
+		$('#input input').keyup(function(e){
+			if(e.keyCode == 13){
+				var msg = $(this).val();
+				$(this).val('');
+				socket.emit('post', { channel : currentChannel, message : msg});
+			}
+		});
 
-		
+		$('#createnewchannelbutton').click(function(){
+			$('#createnewchannel').html('<input type="text" placeholder="Kanavan nimi"><button>Luo</button>').promise().done(function(){
+				$('#createnewchannel button').click(function(){
+					createNewChannel(socket, $('#createnewchannel input').val());
+				});
+			});
+		});	
 	});
+}
+
+function createNewChannel(socket, chan){
+	console.log('creating channel '+chan);
+	channelsOn.push(chan);
+	currentChannel = chan;
+	messages[chan] = [];
+	$('#messages').html('');
+	socket.emit('create', {channel : chan});
+	$('#activechannellist').append('<div class="channel channelMove">' + chan + '</div>');
+	$('.channelMove').click(function(){
+		moveToChannel($(this).html());
+	});
+
 }
 
 function joinToChannel(socket, chan){
@@ -70,7 +103,7 @@ function joinToChannel(socket, chan){
 	messages[chan] = [];
 	$('#messages').html('');
 	socket.emit('join', {channel : chan});
-	$('#activechannellist').append('<div class="channel channelMove">' + chan + '</div>');	
+	$('#activechannellist').append('<div class="channel channelMove">' + chan + '</div>');
 	$('.channelMove').click(function(){
 		moveToChannel($(this).html());
 	});

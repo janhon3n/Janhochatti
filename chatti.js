@@ -38,6 +38,12 @@ io.on('connection', function(socket){
 		console.log(socket.username + ' disconnected');
 	});
 
+	socket.on('create', function(data){
+		console.log(socket.username + ' created a new channel ' + data.channel);
+		channels.push(data.channel);
+		socket.join(data.channel);
+	});
+
 	socket.on('join', function(data){
 		var channel = data.channel;
 

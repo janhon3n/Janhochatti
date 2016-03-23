@@ -22,9 +22,30 @@ padding:50px;
 #login h1{
 margin:0px;
 padding:0px;
-font-family:Helvetica;
-margin-bottom:50px;
+font-family:Georgia;
+margin-bottom:20px;
 }
+#login input[type="text"] {
+font-size:18px;
+padding:4px;
+vertical-align:middle;
+height:26px;
+padding:4px;
+margin:5px;
+}
+#login input[type="color"] {
+vertical-align:middle;
+height:26px;
+padding:4px;
+margin:5px;
+}
+#login button{
+vertical-align:middle;
+padding:8px;
+margin:5px;
+box-sizing:content-box;
+}
+
 #left{
 float:left;
 width:200px;
@@ -55,8 +76,31 @@ color:black;
 }
 
 #createnewchannel{
-
+margin:10px;
 }
+#createnewchannelbutton{
+background-color:#AAA;
+border-radius:5px;
+padding:2px;
+font-size:14px;
+cursor:pointer;
+}
+#createnewchannelbutton:hover{
+color:white;
+background-color:#888;
+}
+#createnewchannel input{
+width:120px;
+}
+#createnewchannel button{
+width:35px;
+border:0px;
+padding:2px;
+margin-left:5px;
+border-radius:5px;
+}
+
+
 #right{
 float:right;
 width:calc(100% - 200px);
@@ -67,20 +111,26 @@ height:100%;
 #messages{
 height:calc(100% - 30px);
 padding:10px;
-
+padding-right:20px;
 -webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
 -moz-box-sizing: border-box;    /* Firefox, other Gecko */
 box-sizing: border-box;         /* Opera/IE 8+ */
 }
 .messagewrap{
-margin:15px;
+margin:5px;
+}
+.messagewrap:nth-child(2n) .message{
+background-color:#FFF;
+}
+.messagewrap:nth-child(2n + 1) .message{
+background-color:#DDF;
 }
 .message{
 padding:4px;
-background-color:white;
-border:1px solid #AAA;
 border-radius:5px;
-text-size:14px;
+font-size:14px;
+display:inline-block;
+font-family:monospace;
 }
 #input{
 padding:0px;
@@ -96,7 +146,6 @@ border:0px;
 border-right:1px solid #AAA;
 padding:4px;
 display:inline-block;
-
 
 -webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
 -moz-box-sizing: border-box;    /* Firefox, other Gecko */
