@@ -6,14 +6,14 @@ var currentChannel = '';
 
 $('document').ready(function(){
 	$('button#loginbutton').click(function(){
-		login($('#usernamefield').val());
+		login($('#usernamefield').val(), $('input#color').val());
 	});
 });
 
-function login(usern){
+function login(usern, col){
 	$('#content').load('/chat.html', function(){
 		var socket = io();
-		socket.emit('login', {username : usern}, function(){
+		socket.emit('login', {username : usern, color : col}, function(){
 		});
 
 		joinToChannel(socket, 'lobby');
@@ -38,9 +38,9 @@ function login(usern){
 			var msg = data.username + ': ' + data.message;
 			console.log(msg);
 
-			messages[data.channel].push({username : data.username, message : data.message});
+			messages[data.channel].push({username : data.username, color : data.color, message : data.message});
 			if(data.channel == currentChannel){
-				addNewMessage(data.username, data.message);
+				addNewMessage(data.username, data.color, data.message);
 			}
 		});
 
@@ -48,9 +48,9 @@ function login(usern){
 			var msg = data.message;
 			console.log(msg);
 
-			messages[data.channel].push({username : 'info', message : msg});
+			messages[data.channel].push({username : 'info', color : data.color, message : msg});
 			if(data.channel == currentChannel){
-				addNewMessage('info', data.message);
+				addNewMessage('info', data.color, data.message);
 			}
 		});
 
@@ -91,12 +91,12 @@ function moveToChannel(channel){
 
 	$('#messages').html('');
 	for(var i = 0; i < messages[channel].length; i++){
-		addNewMessage(messages[channel][i].username, messages[channel][i].message);
+		addNewMessage(messages[channel][i].username, messages[channel][i].color, messages[channel][i].message);
 	}
 }
 
-function addNewMessage(usern, msg){
-	$('#messages').append('<div class="message">' + usern + ': ' + msg + '</div>');
+function addNewMessage(usern, color, msg){
+	$('#messages').append('<div class="messagewrap"><span class="message"><b style="color:' + color + '">' + usern + ':</b> ' + msg + '</span></div>');
 }
 
 function getUrlVars() {

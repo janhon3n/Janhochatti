@@ -7,6 +7,7 @@ height:100%;
 body{
 height:100%;
 margin:0px;
+font-family:georgia;
 }
 #content{
 height:100%;
@@ -30,6 +31,11 @@ width:200px;
 background-color:#666;
 height:100%;
 }
+#left h3{
+font-size:16px;
+margin:5px;
+}
+
 #activechannellist{
 margin:10px;
 }
@@ -66,10 +72,15 @@ padding:10px;
 -moz-box-sizing: border-box;    /* Firefox, other Gecko */
 box-sizing: border-box;         /* Opera/IE 8+ */
 }
+.messagewrap{
+margin:15px;
+}
 .message{
-margin:5px;
-border:1px solid #AAA;
+padding:4px;
 background-color:white;
+border:1px solid #AAA;
+border-radius:5px;
+text-size:14px;
 }
 #input{
 padding:0px;

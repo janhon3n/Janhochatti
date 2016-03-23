@@ -30,6 +30,7 @@ io.on('connection', function(socket){
 	socket.on('login', function(data){
 		console.log(data.username + ' kirjautui chattiin');
 		socket.username = data.username;
+		socket.color = data.color;
 		socket.emit('updateChannels', {channellist : channels});
 	});
 
@@ -45,7 +46,7 @@ io.on('connection', function(socket){
 		}
 		socket.join(channel);
 		var msg = socket.username + ' liittyi kanavalle ' + channel;
-		io.emit('info', {channel : channel, message : msg});
+		io.emit('info', {channel : channel, color : socket.color, message : msg});
 		console.log(msg);
 	});
 
@@ -57,7 +58,7 @@ io.on('connection', function(socket){
 	socket.on('post', function(data){
 		var channel = data.channel;
 		console.log(data.channel + '- ' + socket.username + ': ' + data.message);
-		io.to(channel).emit('message', { channel : channel, username : socket.username, message : data.message });
+		io.to(channel).emit('message', { channel : channel, username : socket.username, color : socket.color, message : data.message });
 	});
 });
 
