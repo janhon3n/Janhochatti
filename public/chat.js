@@ -74,6 +74,13 @@ function login(usern, col){
 		$('#createnewchannelbutton').click(function(){
 			toggleCreateNew(socket);
 		});
+		$('#dropdownmenu svg#menubutton').click(function(){
+			$('#dropdownmenu #dropdowncontent').slideToggle(200);
+		});
+		$('#leaveCurrentChannelButton').click(function(){
+			$('#dropdownmenu #dropdowncontent').slideToggle(200);			
+			leaveCurrentChannel(socket);
+		});
 	});
 }
 
@@ -111,7 +118,7 @@ function createNewChannel(socket, chan){
 	$('.channelMove').click(function(){
 		moveToChannel($(this).html());
 	});
-
+	$('#infobar #title').html(chann);
 }
 
 function joinToChannel(socket, chan){
@@ -125,11 +132,7 @@ function joinToChannel(socket, chan){
 	$('.channelMove').click(function(){
 		moveToChannel($(this).html());
 	});
-
-}
-
-function leaveChannel(chan){
-
+	$('#infobar #title').html(chan);
 }
 
 function moveToChannel(channel){
@@ -144,16 +147,19 @@ function moveToChannel(channel){
 	for(var i = 0; i < messages[channel].length; i++){
 		addNewMessage(messages[channel][i].username, messages[channel][i].color, messages[channel][i].message);
 	}
+	$('#infobar #title').html(channel);
+
+}
+function leaveCurrentChannel(socket){
+	var index = channelsOn.indexOf(currentChannel);
+	channelsOn.splice(index, 1);	
+	$('#activechannellist .channelMove').filter(function(){
+		return $(this).html() == currentChannel;
+	}).remove();
+	socket.emit('leave', {channel : currentChannel});
+	moveToChannel($('#activechannellist .channelMove').first().html());
 }
 
 function addNewMessage(usern, color, msg){
 	$('#messages').append('<div class="messagewrap"><span class="message"><b style="color:' + color + '">' + usern + ':</b> ' + msg + '</span></div>');
-}
-
-function getUrlVars() {
-	var vars = {};
-	var parts = window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, function(m,key,value) {
-		vars[key] = value;
-	});
-	return vars;
 }

@@ -48,6 +48,7 @@ io.on('connection', function(socket){
 		socket.join(channel);
 
 		io.to(channel).emit('info', {channel : channel, color : 'black', message : msg});
+		io.emit('updateChannels', {channellist : channels});
 	});
 
 	socket.on('join', function(data){
@@ -64,7 +65,10 @@ io.on('connection', function(socket){
 
 	socket.on('leave', function(data){
 		var channel = validator.escape(data.channel + '');
+		console.log(socket.username + ' left channel ' + channel);
 		socket.leave(channel);
+
+		socket.emit('updateChannels', {channellist : channels});
 	});
 
 	socket.on('post', function(data){

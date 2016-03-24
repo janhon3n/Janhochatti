@@ -12,6 +12,7 @@ font-family:georgia;
 #content{
 height:100%;
 overflow:hidden;
+box-shadow:5, 5, 4, 4, #666;
 }
 #login{
 background-color:#DDD;
@@ -56,7 +57,6 @@ height:100%;
 font-size:16px;
 margin:5px;
 }
-
 #activechannellist{
 margin:10px;
 }
@@ -71,7 +71,7 @@ padding:2px;
 cursor:pointer;
 }
 .channel:hover{
-background-color:#BBB;
+background-color:#DAFFDA;
 color:black;
 }
 
@@ -79,15 +79,16 @@ color:black;
 margin:10px;
 }
 #createnewchannelbutton{
-background-color:#AAA;
+background-color:#BBB;
 border-radius:5px;
-padding:2px;
+padding:4px;
 font-size:14px;
 cursor:pointer;
+text-align:center;
 }
 #createnewchannelbutton:hover{
 color:white;
-background-color:#888;
+background-color:#074607;
 }
 #createnewchannel input{
 width:120px;
@@ -98,8 +99,8 @@ border:0px;
 padding:2px;
 margin-left:5px;
 border-radius:5px;
+curosr:pointer;
 }
-
 
 #right{
 float:right;
@@ -108,8 +109,53 @@ background-color:#EEE;
 height:100%;
 }
 
+#infobar{
+height:30px;
+background-color:#BBB;
+}
+#dropdownmenu{
+position:relative;
+display:inline-block;
+}
+#dropdownmenu svg#menubutton{
+cursor:pointer;
+}
+#dropdownmenu svg#menubutton:hover{
+background-color:#AAA;
+}
+#dropdownmenu svg#menubutton line {
+stroke-width:3px;
+stroke:black;
+}
+#dropdownmenu #dropdowncontent {
+border-bottom:1px solid #666;
+border-right:1px solid #666;
+position:absolute;
+background-color:#EEE;
+top:30px;
+display:none;
+}
+#dropdownmenu .dropdownlink{
+padding:4px;
+padding-left:8px;
+background-color:white;
+width:250px;
+border-top:1px solid #EEE;
+cursor:pointer;
+}
+#dropdownmenu .dropdownlink:hover{
+background-color:#79CF79;
+}
+
+#infobar #title{
+float:right;
+font-size:22px;
+margin:2px;
+margin-right:7px;
+}
+
 #messages{
-height:calc(100% - 30px);
+height:calc(100% - 60px);
 padding:10px;
 padding-right:20px;
 -webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
@@ -123,7 +169,7 @@ margin:5px;
 background-color:#FFF;
 }
 .messagewrap:nth-child(2n + 1) .message{
-background-color:#DDF;
+background-color:#DAFFDA;
 }
 .message{
 padding:4px;
