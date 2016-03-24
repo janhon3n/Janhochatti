@@ -1,9 +1,9 @@
 var port = 1337;
 var maxMessagesPerChannel = 100;
 
-
 var express = require('express');
 var bodyParser = require('body-parser');
+var validator = require('validator');
 
 console.log("Aloitetaan chattiseveri portissa "+port);
 var app = express();
@@ -28,9 +28,11 @@ var io = require('socket.io').listen(app.listen(port));
 io.on('connection', function(socket){
 
 	socket.on('login', function(data){
-		console.log(data.username + ' kirjautui chattiin');
-		socket.username = data.username;
-		socket.color = data.color;
+		var username = validator.escape(data.username + '');
+		var color = validator.escape(data.color + '');
+		console.log(username + ' kirjautui chattiin');
+		socket.username = username;
+		socket.color = color;
 		socket.emit('updateChannels', {channellist : channels});
 	});
 
@@ -39,34 +41,41 @@ io.on('connection', function(socket){
 	});
 
 	socket.on('create', function(data){
-		console.log(socket.username + ' created a new channel ' + data.channel);
-		channels.push(data.channel);
-		socket.join(data.channel);
+		var channel = validator.escape(data.channel + '');
+		var msg = socket.username + ' created a new channel ' + channel;
+		console.log(msg);
+		channels.push(channel);
+		socket.join(channel);
+
+		io.to(channel).emit('info', {channel : channel, color : 'black', message : msg});
 	});
 
 	socket.on('join', function(data){
-		var channel = data.channel;
+		var channel = validator.escape(data.channel + '');
 
 		if(channels.indexOf(channel) == -1){
 			channels.push(channel);
 		}
 		socket.join(channel);
 		var msg = socket.username + ' liittyi kanavalle ' + channel;
-		io.emit('info', {channel : channel, color : socket.color, message : msg});
+		io.to(channel).emit('info', {channel : channel, color : 'black', message : msg});
 		console.log(msg);
 	});
 
 	socket.on('leave', function(data){
-		var channel = data.channel;
-		socket.leave(channel);		
+		var channel = validator.escape(data.channel + '');
+		socket.leave(channel);
 	});
 
 	socket.on('post', function(data){
-		var channel = data.channel;
-		console.log(data.channel + '- ' + socket.username + ': ' + data.message);
-		io.to(channel).emit('message', { channel : channel, username : socket.username, color : socket.color, message : data.message });
+		var channel = validator.escape(data.channel + '');
+		var msg = validator.escape(data.message + '');
+		console.log(channel + '- ' + socket.username + ': ' + msg);
+		io.to(channel).emit('message', { channel : channel, username : socket.username, color : socket.color, message : msg });
 	});
 });
+
+
 
 function findClientsSocket(roomId, namespace) {
 	var res = [],

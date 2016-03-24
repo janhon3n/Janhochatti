@@ -71,25 +71,43 @@ function login(usern, col){
 				socket.emit('post', { channel : currentChannel, message : msg});
 			}
 		});
-
 		$('#createnewchannelbutton').click(function(){
-			$('#createnewchannel').html('<input type="text" placeholder="Kanavan nimi"><button>Luo</button>').promise().done(function(){
-				$('#createnewchannel button').click(function(){
-					createNewChannel(socket, $('#createnewchannel input').val());
-				});
-			});
-		});	
+			toggleCreateNew(socket);
+		});
 	});
 }
 
+var toggleCreateNewState = true;
+function toggleCreateNew(socket){
+	if(toggleCreateNewState){
+		toggleCreateNewState = false;
+		$('#createnewchannel').html('<input type="text" autofocus><button>Luo</button>').promise().done(function(){
+			$('#createnewchannel button').click(function(){
+				if($('#createnewchannel input').val()){
+					createNewChannel(socket, $('#createnewchannel input').val());
+					toggleCreateNew(socket);
+				}
+			});
+		});
+	} else {
+		toggleCreateNewState = true;
+		$('#createnewchannel').html('<div id="createnewchannelbutton">Luo uusi kanava</div>').promise().done(function(){
+			$('#createnewchannelbutton').click(function(){
+				toggleCreateNew(socket);
+			});
+		});
+	}
+}
+
 function createNewChannel(socket, chan){
-	console.log('creating channel '+chan);
-	channelsOn.push(chan);
-	currentChannel = chan;
-	messages[chan] = [];
+	var chann = validator.escape(chan + '');
+	console.log('creating channel '+chann);
+	channelsOn.push(chann);
+	currentChannel = chann;
+	messages[chann] = [];
 	$('#messages').html('');
-	socket.emit('create', {channel : chan});
-	$('#activechannellist').append('<div class="channel channelMove">' + chan + '</div>');
+	socket.emit('create', {channel : chann});
+	$('#activechannellist').append('<div class="channel channelMove">' + chann + '</div>');
 	$('.channelMove').click(function(){
 		moveToChannel($(this).html());
 	});
