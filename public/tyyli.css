@@ -165,10 +165,10 @@ box-sizing: border-box;         /* Opera/IE 8+ */
 .messagewrap{
 margin:5px;
 }
-.messagewrap:nth-child(2n) .message{
+.messagewrap:nth-child(2n +1) .message{
 background-color:#FFF;
 }
-.messagewrap:nth-child(2n + 1) .message{
+.messagewrap:nth-child(2n) .message{
 background-color:#DAFFDA;
 }
 .message{
