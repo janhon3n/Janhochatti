@@ -144,7 +144,8 @@ border-top:1px solid #EEE;
 cursor:pointer;
 }
 #dropdownmenu .dropdownlink:hover{
-background-color:#79CF79;
+background-color:#074607;
+color:white;
 }
 
 #infobar #title{
@@ -161,6 +162,7 @@ padding-right:20px;
 -webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
 -moz-box-sizing: border-box;    /* Firefox, other Gecko */
 box-sizing: border-box;         /* Opera/IE 8+ */
+overflow-y:auto;
 }
 .messagewrap{
 margin:5px;
@@ -169,7 +171,7 @@ margin:5px;
 background-color:#FFF;
 }
 .messagewrap:nth-child(2n) .message{
-background-color:#DAFFDA;
+background-color:#FFF;
 }
 .message{
 padding:4px;
