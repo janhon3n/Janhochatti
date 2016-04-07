@@ -5,7 +5,7 @@ var express = require('express');
 var bodyParser = require('body-parser');
 var validator = require('validator');
 
-console.log("Aloitetaan chattiseveri portissa "+port);
+console.log("Starting Janhochat at port "+port);
 var app = express();
 
 app.use(bodyParser.json());
@@ -18,7 +18,6 @@ app.engine('jade', require('jade').__express);
 
 
 app.get('/', function(req,res){
-	console.log('Uusi käyttäjä saapui sivulle');
 	res.render('login');
 });
 
@@ -40,17 +39,19 @@ io.on('connection', function(socket){
 				usernameInUse = true;
 			}
 		}
+
 		//if username already in use return error
 		if(usernameInUse){
 			callback('Username already in use');
-		} else {
-			
+		} else if(username == '') {
+			callback('Empty username not allowed');
+		} else {			
 			//else save user data and set up to wait for login
 			socket.username = username;
 			socket.color = color;
 		
 			socket.on('login', function(){
-				console.log(username + ' kirjautui chattiin');
+				console.log(username + ' logged in to the chatt');
 				
 				//after login set up functionality and join the default channel
 				socket.on('create', function(data, callback){
@@ -189,14 +190,11 @@ function getChannelsNotOn(channelsOn){
 }
 
 function channelIsEmpty(channel){
-	console.log('checking if '+channel+' is empty:');
 	for(var i = 0; i < clients.length; i++){
 		if(clients[i].channelsOn.indexOf(channel) >= 0){
-			console.log('no');
 			return false;
 		}
 	}
-	console.log('yes');
 	return true;
 }
 function removeChannel(channel){
@@ -204,6 +202,4 @@ function removeChannel(channel){
 	if(ind != -1){
 		channels.splice(ind, 1);
 	}
-	console.log('channels now:');
-	console.log(channels);
 }

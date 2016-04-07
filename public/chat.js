@@ -115,12 +115,29 @@ function login(usern, col){
 					$('#dropdownmenu #dropdowncontent').slideToggle(200);
 				});
 
+
+				$('.dropdownlink').click(function(){
+					$('#dropdownmenu #dropdowncontent').slideToggle(200);
+				});
+
+
+				/* Dropdown menu link click listeners */
+
 				//user pressed the leave from current channel button
 				$('#leaveCurrentChannelButton').click(function(){
-					$('#dropdownmenu #dropdowncontent').slideToggle(200);			
 					leaveCurrentChannel(socket);
 				});
+				$('#clearAllMessagesButton').click(function(){
+					for(var index in messages){
+						messages[index] = [];
+					}
+					$('#messages').html('');
+				});
+				$('#logoutButton').click(function(){
+					location.reload();
+				});
 				
+				//when functionality set send login request
 				socket.emit('login', {username : usern, color : col});
 			});
 		}
